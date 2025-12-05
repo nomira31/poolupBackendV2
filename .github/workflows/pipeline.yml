@@ -1,19 +1,36 @@
-name: CI/CD Pipeline  
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - master
- 
 
-jobs:  
-  deploy:  
+jobs:
+  build_and_deploy: # This is the single job name
     runs-on: ubuntu-latest
-    steps:  
+    
+    steps:
+      # 1. Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v4
 
- 
+      # --- Docker Build and Push on GitHub Runner ---
+
+      # 2. Login to Docker Hub on the runner
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PAT }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      # 3. Build the image and tag it
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest .
+
+      # 4. Push the image to Docker Hub
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
+        
+      # --- SSH Deployment to DigitalOcean Droplet ---
+        
+      # 5. Deploy on DigitalOcean Droplet
       - name: Deploy on DigitalOcean Droplet
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -23,8 +40,12 @@ jobs:
           port: 22
           timeout: 30s
           script: |
-            # LOGIN TO DOCKER HUB INSIDE DROPLET
+            # LOGIN TO DOCKER HUB INSIDE DROPLET (Necessary for private pulls)
             echo "${{ secrets.DOCKER_HUB_PAT }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+            # Create and enter app folder (ADDED BACK)
+            mkdir -p ~/myapps/poolUpAspBackend
+            cd ~/myapps/poolUpAspBackend
 
             # Pull latest Docker image
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
@@ -35,4 +56,3 @@ jobs:
 
             # Run container (map your actual app port)
             docker run -d --name myapi -p 5000:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
-      
