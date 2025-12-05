@@ -19,7 +19,6 @@ jobs:
       # 2. Login to Docker Hub on the runner
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_HUB_PAT }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
       # 3. Build the image and tag it
       - name: Build Docker Image
         run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest .
