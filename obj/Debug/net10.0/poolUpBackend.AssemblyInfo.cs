@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("poolUpBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66b587de9a835cbecb146d4abb0af4e2864c0b99")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+133cea0c1d23d1f31772f06c3c628bd4f3dfcf34")]
 [assembly: System.Reflection.AssemblyProductAttribute("poolUpBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("poolUpBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
