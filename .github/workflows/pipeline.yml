@@ -39,19 +39,23 @@ jobs:
           port: 22
           timeout: 30s
           script: |
-            # LOGIN TO DOCKER HUB INSIDE DROPLET (Necessary for private pulls)
-            echo "${{ secrets.DOCKER_HUB_PAT }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+            # Set environment variables for Docker Hub
+            export DOCKER_HUB_USERNAME="${{ secrets.DOCKER_HUB_USERNAME }}"
+            export DOCKER_HUB_PAT="${{ secrets.DOCKER_HUB_PAT }}"
 
-            # Create and enter app folder (ADDED BACK)
+            # Login to Docker Hub (non-interactive)
+            docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PAT"
+
+            # Create and enter app folder
             mkdir -p ~/myapps/poolUpAspBackend
             cd ~/myapps/poolUpAspBackend
 
             # Pull latest Docker image
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
+            docker pull $DOCKER_HUB_USERNAME/myapi:latest
 
             # Stop old container if running
             docker stop myapi || true
             docker rm myapi || true
 
-            # Run container (map your actual app port)
-            docker run -d --name myapi -p 5000:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
+            # Run container
+            docker run -d --name myapi -p 5000:5000 $DOCKER_HUB_USERNAME/myapi:latest
