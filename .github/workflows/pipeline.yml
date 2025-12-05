@@ -1,7 +1,23 @@
+name: CI/CD Pipeline  
+
+on:
+  push:
+    branches:
+      - master
+ 
+
+jobs:  
+  deploy:  
+    runs-on: ubuntu-latest
+    steps:  
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+ 
       - name: Deploy on DigitalOcean Droplet
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: 159.89.104.146         
+          host: 159.89.104.146
           username: root
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           port: 22
@@ -23,3 +39,4 @@
 
             # Run container (map your actual app port)
             docker run -d --name myapi -p 5000:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
+      
