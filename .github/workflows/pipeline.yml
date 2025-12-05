@@ -41,7 +41,8 @@ jobs:
 
       # 7. Build Docker image
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest -f Dockerfile .
+
 
       # 8. Push Docker image
       - name: Push Docker Image
