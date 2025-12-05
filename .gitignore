@@ -1,0 +1,80 @@
+# ==========================
+# .NET Core / ASP.NET Core
+# ==========================
+
+bin/
+obj/
+publish/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.zip
+
+# ==========================
+# User-specific files
+# ==========================
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vscode/
+*.idea/
+
+# ==========================
+# Rider IDE
+# ==========================
+
+.idea/
+*.iml
+
+# ==========================
+# Visual Studio
+# ==========================
+
+.vs/
+*.vcxproj.user
+*.dbmdl
+*.opendb
+
+# ==========================
+# ASP.NET Core / Entity Framework
+# ==========================
+
+appsettings.*.json
+secrets.json
+*.db
+*.sqlite
+
+# ==========================
+# Docker
+# ==========================
+
+docker-compose.override.yml
+docker-compose.override.*
+docker-compose.override.*.yml
+*.dockerfile
+**/Dockerfile.*
+*.env
+
+# ==========================
+# Logs and temp files
+# ==========================
+
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+
+# ==========================
+# OS Generated Files
+# ==========================
+
+.DS_Store
+Thumbs.db
+desktop.ini
