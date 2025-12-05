@@ -26,10 +26,6 @@ jobs:
             # LOGIN TO DOCKER HUB INSIDE DROPLET
             echo "${{ secrets.DOCKER_HUB_PAT }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-            # Create and enter app folder
-            mkdir -p ~/myapps/poolUpAspBackend
-            cd ~/myapps/poolUpAspBackend
-
             # Pull latest Docker image
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapi:latest
 
