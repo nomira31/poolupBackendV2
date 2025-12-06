@@ -53,6 +53,6 @@ jobs:
             docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_PAT }}"
             cd ~/myapps/poolUpAspBackend
             docker pull poolbac/poolupaspbackend:latest
-            docker stop myapi || true
-            docker rm myapi || true
-            docker run -d --name myapi -p 5000:5000 poolbac/poolupaspbackend:latest
+            docker stop poolUpAsp || true
+            docker rm poolUpAsp || true
+            docker run -d --name poolUpAsp -p 5000:5000 poolbac/poolupaspbackend:latest
