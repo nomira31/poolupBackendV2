@@ -55,4 +55,4 @@ jobs:
             docker pull poolbac/poolupaspbackend:latest
             docker stop poolUpAsp || true
             docker rm poolUpAsp || true
-            docker run -d --name poolUpAsp -p 5000:5000 poolbac/poolupaspbackend:latest
+            docker run -d --name poolUpAsp -p 8080:8080 poolbac/poolupaspbackend:latest
