@@ -1,7 +1,8 @@
 # ==========================
 # .NET Core / ASP.NET Core
 # ==========================
-
+[Bb]in/
+[Oo]bj/
 bin/
 obj/
 publish/
