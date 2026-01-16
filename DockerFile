@@ -2,12 +2,22 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY *.sln .
-COPY src/Api/*.csproj src/Api/
+# Copy the solution first
+COPY *.sln ./
+
+# Copy the project files for restore
+COPY src/Api/*.csproj ./src/Api/
+
+# Restore only the project/solution
 RUN dotnet restore
 
+# Copy the rest of the source
 COPY . .
+
+# Set working directory to the API folder
 WORKDIR /src/src/Api
+
+# Publish the app
 RUN dotnet publish -c Release -o /app
 
 # ---------- RUNTIME ----------
