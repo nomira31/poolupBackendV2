@@ -6,12 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <!-- Only include Production config explicitly -->
-  <ItemGroup>
-    <Content Include="appsettings.Production.json">
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
+ 
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="14.0.0" />
