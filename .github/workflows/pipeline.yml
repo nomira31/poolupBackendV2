@@ -3,7 +3,8 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - master  # CHANGE TO 'main' IF YOUR BRANCH IS MAIN
+      - main
 
 jobs:
   build_and_deploy:
@@ -14,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4 # Updated to v4
         with:
           dotnet-version: 8.0.x
 
@@ -37,9 +38,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: DockerFile
+          file: ./Dockerfile # Ensure this matches your filename exactly
           push: true
           tags: poolbac/poolupaspbackend:latest
+          # This helps ensure the cache is cleared and the push is fresh
+          no-cache: true 
 
       - name: Deploy on DigitalOcean Droplet
         uses: appleboy/ssh-action@v1.0.3
@@ -48,25 +51,25 @@ jobs:
           username: root
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           port: 22
-          timeout: 60s
           script: |
-            # 1. Login to Docker Hub
+            # Login
             docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_PAT }}"
             
-            # 2. Pull the latest image
+            # Pull latest
             docker pull poolbac/poolupaspbackend:latest
             
-            # 3. Stop and remove the old container version
+            # Stop and remove
             docker stop poolUpAsp || true
             docker rm poolUpAsp || true
             
-            # 4. RUN the new container and inject the DB_PASSWORD from GitHub Secrets
+            # Run
             docker run -d \
               --name poolUpAsp \
               -p 8080:8080 \
               -e ASPNETCORE_ENVIRONMENT="Production" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              --restart unless-stopped \
               poolbac/poolupaspbackend:latest
             
-            # 5. Clean up old images to save disk space
+            # Cleanup
             docker image prune -f
