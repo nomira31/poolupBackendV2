@@ -65,6 +65,7 @@ jobs:
               --name poolUpAsp \
               --restart always \
               -p 8080:8080 \
+              -e ASPNETCORE_ENVIRONMENT="Production" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               poolbac/poolupaspbackend:latest
             
