@@ -4,19 +4,18 @@ using Poolup.Core.Interfaces;
 
 namespace Poolup.Application.Commands;
 
+// 1. Change return type from Guid to WaitlistEntry
 public record AddWaitlistEntryCommand(
-    Guid UserId,
     string FullName,
     string Email,
     string Origin,
     string Destination,
     string TimeWindow,
     bool IsDriver
-) : IRequest<Guid>;
-
+) : IRequest<WaitlistEntry>; 
 
 public class AddWaitlistEntryCommandHandler
-    : IRequestHandler<AddWaitlistEntryCommand, Guid>
+    : IRequestHandler<AddWaitlistEntryCommand, WaitlistEntry>  
 {
     private readonly IWaitlistRepository _repo;
 
@@ -25,22 +24,29 @@ public class AddWaitlistEntryCommandHandler
         _repo = repo;
     }
 
-    public async Task<Guid> Handle(AddWaitlistEntryCommand request, CancellationToken ct)
+    public async Task<WaitlistEntry> Handle(AddWaitlistEntryCommand request, CancellationToken ct)
     {
+        var exists = await _repo.EmailExistsAsync(request.Email, ct);
+
+        if (exists)
+            throw new InvalidOperationException(
+                $"Email '{request.Email}' is already on the waitlist.");
+
         var entry = new WaitlistEntry
         {
-            UserId = request.UserId,
+            Id = Guid.NewGuid(),
             FullName = request.FullName,
             Email = request.Email,
             Origin = request.Origin,
             Destination = request.Destination,
             TimeWindow = request.TimeWindow,
             IsDriver = request.IsDriver,
-            CreatedAt = DateTime.UtcNow  
+            CreatedAt = DateTime.UtcNow
+         
         };
 
         await _repo.AddAsync(entry, ct);
 
-        return entry.Id;
+        return entry;  
     }
 }

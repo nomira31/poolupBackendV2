@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Poolup.Core.DTOs;
-using Poolup.Application.Commands ;
+using Poolup.Application.Commands;
 using Poolup.Application.Queries;
 
 namespace Poolup.Api.Controllers;
@@ -17,14 +17,33 @@ public class WaitlistController : ControllerBase
         _mediator = mediator;
     }
 
+
+
     /// <summary>
-    /// Add a user or driver to the waitlist
+
     /// </summary>
     [HttpPost("add")]
     public async Task<IActionResult> AddToWaitlist(AddWaitlistEntryCommand command)
     {
-        var entryId = await _mediator.Send(command);
-        return Ok(new { EntryId = entryId });
+        try
+        {
+         
+            var entry = await _mediator.Send(command);
+
+            // If successful, return the object (200 OK)
+            return Ok(entry);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // This catches the "Email is already on the waitlist" error from your Handler
+            // and returns it as a clean JSON message (400 Bad Request)
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            // This catches any other unexpected errors so the server doesn't send a raw crash page
+            return StatusCode(500, new { message = "An internal error occurred.", details = ex.Message });
+        }
     }
 
     /// <summary>
@@ -43,17 +62,21 @@ public class WaitlistController : ControllerBase
     [HttpDelete("{entryId:guid}")]
     public async Task<IActionResult> RemoveWaitlistEntry(Guid entryId)
     {
-        await _mediator.Send(new RemoveWaitlistEntryCommand(entryId));
-        return NoContent();
+        try
+        {
+            await _mediator.Send(new RemoveWaitlistEntryCommand(entryId));
+
+            // Return a clear success message
+            return Ok(new { message = $"Entry {entryId} successfully removed from the waitlist." });
+        }
+        catch (KeyNotFoundException ex) // Assuming your handler throws this if ID isn't found
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred while removing the entry.", details = ex.Message });
+        }
     }
 
-    /// <summary>
-    /// Get waitlist entries for a specific user
-    /// </summary>
-    [HttpGet("user/{userId:guid}")]
-    public async Task<IActionResult> GetByUserId(Guid userId)
-    {
-        var entries = await _mediator.Send(new GetWaitlistEntriesByUserQuery(userId));
-        return Ok(entries);
-    }
 }
