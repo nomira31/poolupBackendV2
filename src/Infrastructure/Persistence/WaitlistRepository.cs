@@ -3,6 +3,7 @@ using Poolup.Core.Entities.Waitlist;
 using Poolup.Core.Interfaces;
 
 namespace Poolup.Infrastructure.Persistence;
+
 public class WaitlistRepository : IWaitlistRepository
 {
     private readonly ApplicationDbContext _db;
@@ -28,12 +29,16 @@ public class WaitlistRepository : IWaitlistRepository
         }
     }
 
+
+    public async Task<bool> EmailExistsAsync(string email, CancellationToken ct)
+    {
+        return await _db.WaitlistEntries
+            .AnyAsync(w => w.Email == email, ct);
+    }
+
     public async Task<List<WaitlistEntry>> GetAllAsync()
-        => await _db.WaitlistEntries.Include(e => e.User).ToListAsync();
+        => await _db.WaitlistEntries.ToListAsync();
 
-    public async Task<List<WaitlistEntry>> GetByUserIdAsync(Guid userId)
-        => await _db.WaitlistEntries.Where(e => e.UserId == userId).ToListAsync();
-
-    public async Task<WaitlistEntry?> GetByIdAsync(Guid id)
-        => await _db.WaitlistEntries.Include(e => e.User).FirstOrDefaultAsync(e => e.Id == id);
+   
+  
 }

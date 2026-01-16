@@ -42,17 +42,31 @@ jobs:
           tags: poolbac/poolupaspbackend:latest
 
       - name: Deploy on DigitalOcean Droplet
-        uses: appleboy/ssh-action@v0.1.9
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: 159.89.104.146
           username: root
           key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           port: 22
-          timeout: 30s
+          timeout: 60s
           script: |
+            # 1. Login to Docker Hub
             docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_PAT }}"
-            cd ~/myapps/poolUpAspBackend
+            
+            # 2. Pull the latest image
             docker pull poolbac/poolupaspbackend:latest
+            
+            # 3. Stop and remove the old container version
             docker stop poolUpAsp || true
             docker rm poolUpAsp || true
-            docker run -d --name poolUpAsp -p 8080:8080 poolbac/poolupaspbackend:latest
+            
+            # 4. RUN the new container and inject the DB_PASSWORD from GitHub Secrets
+            docker run -d \
+              --name poolUpAsp \
+              --restart always \
+              -p 8080:8080 \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              poolbac/poolupaspbackend:latest
+            
+            # 5. Clean up old images to save disk space
+            docker image prune -f
