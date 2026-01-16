@@ -6,6 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+<ItemGroup>
+  <Content Include="appsettings.json">
+    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+  </Content>
+  <Content Include="appsettings.Production.json">
+    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+  </Content>
+</ItemGroup>
+
+
   <ItemGroup>
     <PackageReference Include="MediatR" Version="14.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
