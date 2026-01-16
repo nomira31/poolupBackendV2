@@ -42,8 +42,7 @@ publish/
 # ==========================
 # ASP.NET Core / Entity Framework
 # ==========================
-
-appsettings.*.json
+ 
 secrets.json
 *.db
 *.sqlite
