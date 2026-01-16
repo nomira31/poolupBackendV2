@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile # Ensure this matches your filename exactly
+          file: Dockerfile # Ensure this matches your filename exactly
           push: true
           tags: poolbac/poolupaspbackend:latest
           # This helps ensure the cache is cleared and the push is fresh
