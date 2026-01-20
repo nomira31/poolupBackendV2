@@ -60,7 +60,17 @@ builder.Services.AddSwaggerGen();
 
 // --- Auth / Authorization ---
 builder.Services.AddAuthorization();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", builder =>
+    {
+        builder.WithOrigins(
+                "http://localhost:3000", 
+                "https://www.poolupuni.com")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 
 // --- Middleware ---
@@ -68,7 +78,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseRouting();
-
+app.UseCors("AllowSpecificOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 
